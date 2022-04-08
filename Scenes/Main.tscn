@@ -43,6 +43,7 @@
 [ext_resource path="res://UI/check_on_normal.png" type="Texture" id=41]
 [ext_resource path="res://UI/check_off_normal.png" type="Texture" id=42]
 [ext_resource path="res://UI/button_invert_top_hover.png" type="Texture" id=43]
+[ext_resource path="res://UI/slider_grabber.png" type="Texture" id=44]
 [ext_resource path="res://UI/ico_link.png" type="Texture" id=47]
 [ext_resource path="res://UI/ico_swap.png" type="Texture" id=48]
 [ext_resource path="res://UI/null.png" type="Texture" id=49]
@@ -139,59 +140,56 @@ font_data = ExtResource( 5 )
 size = 14
 font_data = ExtResource( 39 )
 
-[sub_resource type="StreamTexture" id=10]
-flags = 4
-
-[sub_resource type="StyleBoxTexture" id=11]
+[sub_resource type="StyleBoxTexture" id=10]
 texture = ExtResource( 13 )
 region_rect = Rect2( 8, 1, 12, 12 )
 
-[sub_resource type="StyleBoxFlat" id=12]
+[sub_resource type="StyleBoxFlat" id=11]
 bg_color = Color( 0, 0, 0, 0 )
 border_color = Color( 1, 1, 1, 1 )
 
-[sub_resource type="DynamicFont" id=13]
+[sub_resource type="DynamicFont" id=12]
 size = 11
 font_data = ExtResource( 39 )
+
+[sub_resource type="DynamicFont" id=13]
+size = 14
+font_data = ExtResource( 5 )
 
 [sub_resource type="DynamicFont" id=14]
 size = 14
-font_data = ExtResource( 5 )
+font_data = ExtResource( 39 )
 
 [sub_resource type="DynamicFont" id=15]
-size = 14
+size = 11
 font_data = ExtResource( 39 )
 
-[sub_resource type="StreamTexture" id=16]
+[sub_resource type="DynamicFont" id=16]
+size = 11
+font_data = ExtResource( 39 )
+
+[sub_resource type="StreamTexture" id=17]
 flags = 4
 
-[sub_resource type="DynamicFont" id=17]
-size = 11
-font_data = ExtResource( 39 )
-
 [sub_resource type="DynamicFont" id=18]
-size = 11
-font_data = ExtResource( 39 )
-
-[sub_resource type="DynamicFont" id=19]
 size = 14
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=20]
+[sub_resource type="DynamicFont" id=19]
 size = 12
 font_data = ExtResource( 39 )
 
-[sub_resource type="ImageTexture" id=21]
+[sub_resource type="ImageTexture" id=20]
 
-[sub_resource type="DynamicFont" id=22]
+[sub_resource type="DynamicFont" id=21]
 size = 14
 font_data = ExtResource( 39 )
 
-[sub_resource type="DynamicFont" id=23]
+[sub_resource type="DynamicFont" id=22]
 size = 12
 font_data = ExtResource( 39 )
 
-[sub_resource type="StyleBoxFlat" id=24]
+[sub_resource type="StyleBoxFlat" id=23]
 bg_color = Color( 0.298039, 0.329412, 0.329412, 1 )
 border_width_left = 1
 border_width_top = 1
@@ -199,11 +197,11 @@ border_width_right = 1
 border_width_bottom = 1
 border_color = Color( 0.192157, 0.192157, 0.192157, 1 )
 
-[sub_resource type="DynamicFont" id=25]
+[sub_resource type="DynamicFont" id=24]
 size = 14
 font_data = ExtResource( 5 )
 
-[sub_resource type="DynamicFont" id=26]
+[sub_resource type="DynamicFont" id=25]
 size = 14
 font_data = ExtResource( 5 )
 
@@ -624,10 +622,10 @@ focus_mode = 1
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 10 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = 18.0
 max_value = 42.0
 step = 3.0
@@ -642,7 +640,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "TITLE SIZE"
 __meta__ = {
@@ -655,7 +653,7 @@ margin_left = 164.0
 margin_top = 3.0
 margin_right = 284.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "30"
 align = 2
@@ -685,7 +683,7 @@ custom_styles/hover = ExtResource( 25 )
 custom_styles/pressed = ExtResource( 26 )
 custom_styles/disabled = ExtResource( 27 )
 custom_styles/normal = ExtResource( 14 )
-custom_fonts/font = SubResource( 14 )
+custom_fonts/font = SubResource( 13 )
 toggle_mode = true
 pressed = true
 text = "HIDE"
@@ -701,7 +699,7 @@ focus_next = NodePath("../NameSize")
 focus_mode = 1
 mouse_filter = 1
 custom_styles/normal = ExtResource( 28 )
-custom_fonts/font = SubResource( 15 )
+custom_fonts/font = SubResource( 14 )
 clear_button_enabled = true
 placeholder_text = "NAME"
 __meta__ = {
@@ -717,10 +715,10 @@ focus_mode = 1
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = 18.0
 max_value = 60.0
 step = 3.0
@@ -735,7 +733,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "NAME SIZE"
 __meta__ = {
@@ -748,7 +746,7 @@ margin_left = 164.0
 margin_top = 3.0
 margin_right = 284.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "30"
 align = 2
@@ -812,7 +810,7 @@ margin_left = 2.0
 margin_top = -1.0
 margin_right = 63.0
 margin_bottom = 13.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "EMBOSS"
 align = 2
@@ -865,10 +863,10 @@ focus_mode = 0
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 step = 5.0
 value = 35.0
 __meta__ = {
@@ -881,7 +879,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "PATTERN OPACITY"
 __meta__ = {
@@ -902,7 +900,7 @@ margin_top = 420.0
 margin_right = 122.0
 margin_bottom = 435.0
 rect_pivot_offset = Vector2( -701, 15 )
-custom_fonts/font = SubResource( 17 )
+custom_fonts/font = SubResource( 15 )
 custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
 text = "CARD FRAME COLORS"
 align = 1
@@ -915,7 +913,7 @@ margin_left = 150.0
 margin_top = 420.0
 margin_right = 360.0
 margin_bottom = 435.0
-custom_fonts/font = SubResource( 18 )
+custom_fonts/font = SubResource( 16 )
 custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
 text = "CARD FRAME GRADIENT PROPERTIES"
 align = 1
@@ -966,10 +964,10 @@ focus_mode = 1
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 max_value = 360.0
 value = 55.0
 __meta__ = {
@@ -1075,7 +1073,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "ANGLE"
 __meta__ = {
@@ -1092,10 +1090,10 @@ focus_mode = 1
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = 0.05
 max_value = 0.5
 step = 0.01
@@ -1134,7 +1132,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "TRANSITION"
 __meta__ = {
@@ -1150,10 +1148,10 @@ focus_mode = 1
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = -50.0
 max_value = 50.0
 __meta__ = {
@@ -1190,7 +1188,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "OFFSET"
 __meta__ = {
@@ -1233,13 +1231,14 @@ margin_left = 40.0
 margin_top = 181.0
 margin_right = 360.0
 margin_bottom = 201.0
+focus_next = NodePath("../ImageY")
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = -400.0
 max_value = 400.0
 __meta__ = {
@@ -1277,7 +1276,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "MOVE X"
 __meta__ = {
@@ -1302,13 +1301,14 @@ margin_top = 225.0
 margin_right = 680.0
 margin_bottom = 245.0
 rect_rotation = 180.0
+focus_next = NodePath("../ImageRotate")
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = -600.0
 max_value = 600.0
 __meta__ = {
@@ -1349,7 +1349,7 @@ margin_top = 17.0
 margin_right = 438.0
 margin_bottom = 31.0
 rect_rotation = 180.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "MOVE Y"
 __meta__ = {
@@ -1373,13 +1373,14 @@ margin_left = 40.0
 margin_top = 231.0
 margin_right = 285.0
 margin_bottom = 251.0
+focus_next = NodePath("../ImageScale")
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = ExtResource( 44 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = -180.0
 max_value = 180.0
 __meta__ = {
@@ -1417,7 +1418,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "ROTATE"
 __meta__ = {
@@ -1444,10 +1445,10 @@ margin_bottom = 276.0
 mouse_filter = 1
 custom_icons/grabber_disabled = ExtResource( 24 )
 custom_icons/grabber_highlight = ExtResource( 24 )
-custom_icons/grabber = SubResource( 16 )
-custom_styles/slider = SubResource( 11 )
-custom_styles/grabber_area_highlight = SubResource( 12 )
-custom_styles/grabber_area = SubResource( 12 )
+custom_icons/grabber = SubResource( 17 )
+custom_styles/slider = SubResource( 10 )
+custom_styles/grabber_area_highlight = SubResource( 11 )
+custom_styles/grabber_area = SubResource( 11 )
 min_value = 1.0
 max_value = 2.0
 step = 0.005
@@ -1487,7 +1488,7 @@ margin_left = 2.0
 margin_top = 3.0
 margin_right = 122.0
 margin_bottom = 17.0
-custom_fonts/font = SubResource( 13 )
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "SCALE"
 __meta__ = {
@@ -1504,7 +1505,7 @@ custom_styles/hover = ExtResource( 25 )
 custom_styles/pressed = ExtResource( 26 )
 custom_styles/disabled = ExtResource( 27 )
 custom_styles/normal = ExtResource( 14 )
-custom_fonts/font = SubResource( 19 )
+custom_fonts/font = SubResource( 18 )
 toggle_mode = true
 text = "FLIP"
 __meta__ = {
@@ -1637,7 +1638,7 @@ margin_top = 583.0
 margin_right = 616.0
 margin_bottom = 603.0
 rect_clip_content = false
-custom_fonts/normal_font = SubResource( 20 )
+custom_fonts/normal_font = SubResource( 19 )
 text = "COPY
 "
 scroll_active = false
@@ -1734,7 +1735,7 @@ texture = ExtResource( 17 )
 centered = false
 
 [node name="Original" type="Sprite" parent="GUI/UpdateMode"]
-texture = SubResource( 21 )
+texture = SubResource( 20 )
 centered = false
 
 [node name="Hint1" type="Label" parent="GUI/UpdateMode"]
@@ -1742,7 +1743,7 @@ margin_left = 480.0
 margin_top = 117.0
 margin_right = 780.0
 margin_bottom = 177.0
-custom_fonts/font = SubResource( 22 )
+custom_fonts/font = SubResource( 21 )
 custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
 custom_constants/line_spacing = 1
 text = "UPLOAD A CARD TO REPLACE ITS
@@ -1757,7 +1758,7 @@ margin_left = 480.0
 margin_top = 117.0
 margin_right = 780.0
 margin_bottom = 177.0
-custom_fonts/font = SubResource( 22 )
+custom_fonts/font = SubResource( 21 )
 custom_colors/font_color = Color( 1, 0.423529, 0.423529, 1 )
 custom_constants/line_spacing = 1
 text = "
@@ -1854,7 +1855,7 @@ __meta__ = {
 margin_top = 580.0
 margin_right = 380.0
 margin_bottom = 600.0
-custom_fonts/font = SubResource( 23 )
+custom_fonts/font = SubResource( 22 )
 custom_colors/font_color = Color( 1, 0.482353, 0.482353, 1 )
 text = "Error"
 valign = 1
@@ -1906,7 +1907,7 @@ margin_left = 295.0
 margin_top = 105.0
 margin_right = 360.0
 margin_bottom = 120.0
-custom_fonts/font = SubResource( 17 )
+custom_fonts/font = SubResource( 15 )
 custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
 text = "TOKENS"
 __meta__ = {
@@ -1932,7 +1933,8 @@ margin_left = 2.0
 margin_top = -1.0
 margin_right = 63.0
 margin_bottom = 13.0
-custom_fonts/font = SubResource( 13 )
+focus_next = NodePath("../../ImageX")
+custom_fonts/font = SubResource( 12 )
 custom_colors/font_color = Color( 0, 0, 0, 1 )
 text = "ORIGIN"
 align = 2
@@ -1950,10 +1952,10 @@ __meta__ = {
 }
 
 [node name="PickerA" type="ColorPicker" parent="GUI/PickerPanelA"]
-margin_left = 210.0
-margin_top = 210.0
-margin_right = 518.0
-margin_bottom = 622.0
+margin_left = 238.0
+margin_top = 238.0
+margin_right = 546.0
+margin_bottom = 650.0
 edit_alpha = false
 hsv_mode = true
 presets_enabled = false
@@ -1972,10 +1974,10 @@ __meta__ = {
 }
 
 [node name="PickerB" type="ColorPicker" parent="GUI/PickerPanelB"]
-margin_left = 210.0
-margin_top = 210.0
-margin_right = 518.0
-margin_bottom = 622.0
+margin_left = 238.0
+margin_top = 238.0
+margin_right = 546.0
+margin_bottom = 650.0
 color = Color( 0, 0.623529, 1, 1 )
 edit_alpha = false
 hsv_mode = true
@@ -1998,7 +2000,7 @@ margin_top = 390.0
 margin_right = 780.0
 margin_bottom = 545.0
 custom_icons/close = ExtResource( 49 )
-custom_styles/panel = SubResource( 24 )
+custom_styles/panel = SubResource( 23 )
 custom_colors/title_color = Color( 0, 0, 0, 1 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -2029,7 +2031,7 @@ custom_styles/hover = ExtResource( 25 )
 custom_styles/pressed = ExtResource( 26 )
 custom_styles/disabled = ExtResource( 27 )
 custom_styles/normal = ExtResource( 14 )
-custom_fonts/font = SubResource( 25 )
+custom_fonts/font = SubResource( 24 )
 text = ".NAIS>>>"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -2044,7 +2046,7 @@ custom_styles/hover = ExtResource( 25 )
 custom_styles/pressed = ExtResource( 26 )
 custom_styles/disabled = ExtResource( 27 )
 custom_styles/normal = ExtResource( 14 )
-custom_fonts/font = SubResource( 25 )
+custom_fonts/font = SubResource( 24 )
 text = "COPY TO CLIPBOARD"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -2060,7 +2062,7 @@ custom_styles/hover = ExtResource( 25 )
 custom_styles/pressed = ExtResource( 26 )
 custom_styles/disabled = ExtResource( 27 )
 custom_styles/normal = ExtResource( 14 )
-custom_fonts/font = SubResource( 26 )
+custom_fonts/font = SubResource( 25 )
 text = "CLOSE"
 __meta__ = {
 "_edit_use_anchors_": false
