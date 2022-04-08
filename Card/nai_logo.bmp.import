@@ -1,0 +1,15 @@
+[remap]
+
+importer="bitmap"
+type="BitMap"
+path="res://.import/nai_logo.bmp-cd26c578dc8a241069a80b355ae43b23.res"
+
+[deps]
+
+source_file="res://Card/nai_logo.bmp"
+dest_files=[ "res://.import/nai_logo.bmp-cd26c578dc8a241069a80b355ae43b23.res" ]
+
+[params]
+
+create_from=0
+threshold=0.5
