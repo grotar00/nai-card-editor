@@ -1,0 +1,2082 @@
+[gd_scene load_steps=88 format=2]
+
+[ext_resource path="res://Card/nai_logo.png" type="Texture" id=1]
+[ext_resource path="res://Presets/button_font.tres" type="DynamicFont" id=2]
+[ext_resource path="res://Scripts/Control.gd" type="Script" id=3]
+[ext_resource path="res://Card/mask_card.png" type="Texture" id=4]
+[ext_resource path="res://Fonts/Montserrat-Bold.ttf" type="DynamicFontData" id=5]
+[ext_resource path="res://Card/title_bar.png" type="Texture" id=6]
+[ext_resource path="res://Card/shadow_B.png" type="Texture" id=7]
+[ext_resource path="res://UI/line.png" type="Texture" id=8]
+[ext_resource path="res://Patterns/pattern1.png" type="Texture" id=9]
+[ext_resource path="res://Card/mask_face_B.png" type="Texture" id=10]
+[ext_resource path="res://Card/placeholder.png" type="Texture" id=11]
+[ext_resource path="res://Card/mask_frame_B.png" type="Texture" id=12]
+[ext_resource path="res://UI/slider_body.png" type="Texture" id=13]
+[ext_resource path="res://Presets/button_normal.tres" type="StyleBox" id=14]
+[ext_resource path="res://Card/token_bar.png" type="Texture" id=15]
+[ext_resource path="res://Card/Gradient.tres" type="Texture" id=16]
+[ext_resource path="res://UI/background.png" type="Texture" id=17]
+[ext_resource path="res://Scenes/Shirt.tscn" type="PackedScene" id=18]
+[ext_resource path="res://Scenes/Spectrum.tscn" type="PackedScene" id=19]
+[ext_resource path="res://UI/button_invert_bot_normal.png" type="Texture" id=20]
+[ext_resource path="res://UI/button_invert_bot_hover.png" type="Texture" id=21]
+[ext_resource path="res://UI/button_invert_bot_pressed.png" type="Texture" id=22]
+[ext_resource path="res://UI/button_invert_top_normal.png" type="Texture" id=23]
+[ext_resource path="res://UI/slider_grabber_focus.png" type="Texture" id=24]
+[ext_resource path="res://Presets/button_hover.tres" type="StyleBox" id=25]
+[ext_resource path="res://Presets/button_pressed.tres" type="StyleBox" id=26]
+[ext_resource path="res://Presets/button_disabled.tres" type="StyleBox" id=27]
+[ext_resource path="res://Presets/field_normal.tres" type="StyleBox" id=28]
+[ext_resource path="res://UI/reset_hover.png" type="Texture" id=29]
+[ext_resource path="res://UI/reset_normal.png" type="Texture" id=30]
+[ext_resource path="res://UI/reset_pressed.png" type="Texture" id=31]
+[ext_resource path="res://UI/4chan_normal.png" type="Texture" id=32]
+[ext_resource path="res://UI/4chan_hover.png" type="Texture" id=33]
+[ext_resource path="res://Presets/Mono.tres" type="DynamicFont" id=34]
+[ext_resource path="res://UI/lock_hover.png" type="Texture" id=35]
+[ext_resource path="res://UI/lock_normal.png" type="Texture" id=36]
+[ext_resource path="res://UI/lock_pressed.png" type="Texture" id=37]
+[ext_resource path="res://Card/emboss_B.png" type="Texture" id=38]
+[ext_resource path="res://Fonts/NotoMono-Regular.ttf" type="DynamicFontData" id=39]
+[ext_resource path="res://UI/button_invert_top_pressed.png" type="Texture" id=40]
+[ext_resource path="res://UI/check_on_normal.png" type="Texture" id=41]
+[ext_resource path="res://UI/check_off_normal.png" type="Texture" id=42]
+[ext_resource path="res://UI/button_invert_top_hover.png" type="Texture" id=43]
+[ext_resource path="res://UI/ico_link.png" type="Texture" id=47]
+[ext_resource path="res://UI/ico_swap.png" type="Texture" id=48]
+[ext_resource path="res://UI/null.png" type="Texture" id=49]
+[ext_resource path="res://UI/ico_focus.png" type="Texture" id=50]
+[ext_resource path="res://UI/ico_focus_hover.png" type="Texture" id=51]
+[ext_resource path="res://Card/orb.png" type="Texture" id=52]
+[ext_resource path="res://UI/4chan_press.png" type="Texture" id=53]
+[ext_resource path="res://UI/random_hover.png" type="Texture" id=54]
+[ext_resource path="res://UI/random_normal.png" type="Texture" id=55]
+[ext_resource path="res://UI/random_press.png" type="Texture" id=56]
+[ext_resource path="res://UI/icon_copy.png" type="Texture" id=57]
+[ext_resource path="res://UI/gray.png" type="Texture" id=58]
+[ext_resource path="res://UI/black.png" type="Texture" id=59]
+[ext_resource path="res://UI/update_hover.png" type="Texture" id=60]
+[ext_resource path="res://UI/update_pressed.png" type="Texture" id=61]
+[ext_resource path="res://UI/update_normal.png" type="Texture" id=62]
+[ext_resource path="res://Card/nai_logo.bmp" type="BitMap" id=63]
+[ext_resource path="res://Card/nai_logo_hover.png" type="Texture" id=64]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform bool invert_top = false;
+uniform bool invert_bot = true;
+
+vec4 overlay(vec4 base, vec4 blend){
+	vec4 limit = step(0.5, base);
+	return mix(2.0 * base * blend, 1.0 - 2.0 * (1.0 - base) * (1.0 - blend), limit);
+}
+
+vec3 invert(vec3 color, float ratio){
+	if (ratio == 0.0) {
+		return color;
+	}
+	else if (ratio == 1.0) {
+		return 1.0 - color;
+	}
+	return color * (1.0 - ratio) + (1.0 - color) * ratio;
+}
+
+void fragment(){
+	float invert_mod = 0.0;
+	float ypos = UV.y * 600.0;
+	if (invert_top && invert_bot) {
+		invert_mod = 1.0;
+	}
+	else if (invert_top) {
+		if (ypos < 150.0) {
+			invert_mod = 1.0;
+		}
+		else if (ypos <= 450.0) {
+			invert_mod = 1.0 - (ypos - 150.0) / 300.0;
+		}
+	}
+	else if (invert_bot) {
+		if (ypos >= 150.0 && ypos < 450.0) {
+			invert_mod = (ypos - 150.0) / 300.0;
+		}
+		else if (ypos > 450.0) {
+			invert_mod = 1.0;
+		}
+	}
+
+	vec4 color = texture(TEXTURE, UV);
+	COLOR = vec4(invert(color.rgb, invert_mod), color.a);
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+shader = SubResource( 1 )
+shader_param/invert_top = false
+shader_param/invert_bot = false
+
+[sub_resource type="Shader" id=3]
+
+[sub_resource type="ShaderMaterial" id=4]
+shader = SubResource( 3 )
+
+[sub_resource type="CanvasItemMaterial" id=5]
+next_pass = SubResource( 4 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 12
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=7]
+size = 24
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=8]
+size = 30
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=9]
+size = 14
+font_data = ExtResource( 39 )
+
+[sub_resource type="StreamTexture" id=10]
+flags = 4
+
+[sub_resource type="StyleBoxTexture" id=11]
+texture = ExtResource( 13 )
+region_rect = Rect2( 8, 1, 12, 12 )
+
+[sub_resource type="StyleBoxFlat" id=12]
+bg_color = Color( 0, 0, 0, 0 )
+border_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="DynamicFont" id=13]
+size = 11
+font_data = ExtResource( 39 )
+
+[sub_resource type="DynamicFont" id=14]
+size = 14
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=15]
+size = 14
+font_data = ExtResource( 39 )
+
+[sub_resource type="StreamTexture" id=16]
+flags = 4
+
+[sub_resource type="DynamicFont" id=17]
+size = 11
+font_data = ExtResource( 39 )
+
+[sub_resource type="DynamicFont" id=18]
+size = 11
+font_data = ExtResource( 39 )
+
+[sub_resource type="DynamicFont" id=19]
+size = 14
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=20]
+size = 12
+font_data = ExtResource( 39 )
+
+[sub_resource type="ImageTexture" id=21]
+
+[sub_resource type="DynamicFont" id=22]
+size = 14
+font_data = ExtResource( 39 )
+
+[sub_resource type="DynamicFont" id=23]
+size = 12
+font_data = ExtResource( 39 )
+
+[sub_resource type="StyleBoxFlat" id=24]
+bg_color = Color( 0.298039, 0.329412, 0.329412, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.192157, 0.192157, 0.192157, 1 )
+
+[sub_resource type="DynamicFont" id=25]
+size = 14
+font_data = ExtResource( 5 )
+
+[sub_resource type="DynamicFont" id=26]
+size = 14
+font_data = ExtResource( 5 )
+
+[node name="Control" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+shirt_sample = ExtResource( 18 )
+
+[node name="Card" type="Control" parent="."]
+margin_right = 400.0
+margin_bottom = 600.0
+rect_min_size = Vector2( 400, 600 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Outline" type="ColorRect" parent="Card"]
+margin_right = 400.0
+margin_bottom = 600.0
+color = Color( 0.282353, 0.282353, 0.282353, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FrameGradient" type="Sprite" parent="Card"]
+light_mask = 64
+position = Vector2( 200, 300 )
+rotation = 1.0472
+scale = Vector2( 1, 700 )
+texture = ExtResource( 16 )
+
+[node name="Pattern" type="Sprite" parent="Card"]
+modulate = Color( 1, 1, 1, 0.188235 )
+light_mask = 64
+material = SubResource( 2 )
+texture = ExtResource( 9 )
+centered = false
+
+[node name="Emboss" type="Sprite" parent="Card"]
+modulate = Color( 1, 1, 1, 0.372549 )
+light_mask = 64
+material = SubResource( 5 )
+texture = ExtResource( 38 )
+centered = false
+
+[node name="NameTrigger" type="Control" parent="Card"]
+margin_top = 538.0
+margin_right = 400.0
+margin_bottom = 598.0
+rect_min_size = Vector2( 400, 60 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameBackdrop3" type="Label" parent="Card"]
+margin_left = -400.0
+margin_top = 516.0
+margin_right = 800.0
+margin_bottom = 616.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "CHARACTER NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameBackdrop2" type="Label" parent="Card"]
+margin_left = -400.0
+margin_top = 516.0
+margin_right = 800.0
+margin_bottom = 616.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "CHARACTER NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameBackdrop1" type="Label" parent="Card"]
+margin_left = -400.0
+margin_top = 516.0
+margin_right = 800.0
+margin_bottom = 616.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "CHARACTER NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="Label" parent="Card"]
+margin_left = -400.0
+margin_top = 516.0
+margin_right = 800.0
+margin_bottom = 616.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.372549 )
+text = "CHARACTER NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleBigTrigger" type="Control" parent="Card"]
+margin_top = 498.0
+margin_right = 400.0
+margin_bottom = 538.0
+rect_min_size = Vector2( 400, 40 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleBigBackdrop3" type="Label" parent="Card"]
+margin_left = -300.0
+margin_top = 477.0
+margin_right = 700.0
+margin_bottom = 557.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "TITLE NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleBigBackdrop2" type="Label" parent="Card"]
+margin_left = -300.0
+margin_top = 477.0
+margin_right = 700.0
+margin_bottom = 557.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "TITLE NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleBigBackdrop1" type="Label" parent="Card"]
+margin_left = -300.0
+margin_top = 477.0
+margin_right = 700.0
+margin_bottom = 557.0
+custom_colors/font_color = Color( 0, 0, 0, 0 )
+text = "TITLE NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleBig" type="Label" parent="Card"]
+margin_left = -300.0
+margin_top = 477.0
+margin_right = 700.0
+margin_bottom = 557.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.372549 )
+text = "TITLE NAME"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="Card"]
+visible = false
+margin_left = 139.0
+margin_top = 4.0
+margin_right = 304.0
+margin_bottom = 39.0
+custom_fonts/font = SubResource( 6 )
+text = "NOVEL AI LOREBOOK FILE
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Black" type="ColorRect" parent="Card"]
+light_mask = 33
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 380.0
+margin_bottom = 540.0
+mouse_filter = 2
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="Card/Black"]
+margin_top = 150.0
+margin_right = 360.0
+margin_bottom = 350.0
+custom_fonts/font = SubResource( 7 )
+custom_colors/font_color = Color( 0.294118, 0.294118, 0.294118, 1 )
+text = "THIS AREA WILL BE
+TRANSPARENT ON
+DOWNLOAD"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Portrait" type="Sprite" parent="Card"]
+light_mask = 32
+position = Vector2( 200, 300 )
+texture = ExtResource( 11 )
+
+[node name="TitleBar" type="Sprite" parent="Card"]
+light_mask = 32
+position = Vector2( 22, 538 )
+texture = ExtResource( 6 )
+centered = false
+offset = Vector2( 0, -40 )
+
+[node name="TitleTrigger" type="Control" parent="Card/TitleBar"]
+margin_top = -40.0
+margin_right = 270.0
+rect_min_size = Vector2( 270, 40 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Title" type="Label" parent="Card/TitleBar"]
+light_mask = 33
+margin_left = 10.0
+margin_top = -70.0
+margin_right = 1210.0
+margin_bottom = 30.0
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.372549 )
+text = "TITLE NAME"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TokenBarTop" type="Sprite" parent="Card"]
+light_mask = 32
+position = Vector2( 378, 22 )
+scale = Vector2( 1, -1 )
+texture = ExtResource( 15 )
+centered = false
+offset = Vector2( -100, -40 )
+
+[node name="TokensTopTrigger" type="Control" parent="Card/TokenBarTop"]
+margin_left = -100.0
+margin_top = -38.0
+margin_bottom = 2.0
+rect_min_size = Vector2( 100, 40 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TokensTop" type="Label" parent="Card/TokenBarTop"]
+margin_left = -92.0
+margin_right = 8.0
+margin_bottom = 80.0
+rect_scale = Vector2( 1, -1 )
+custom_fonts/font = SubResource( 8 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.372549 )
+text = "200"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TokenBarBottom" type="Sprite" parent="Card"]
+light_mask = 32
+position = Vector2( 378, 538 )
+texture = ExtResource( 15 )
+centered = false
+offset = Vector2( -100, -40 )
+
+[node name="TokensBottomTrigger" type="Control" parent="Card/TokenBarBottom"]
+margin_left = -100.0
+margin_top = -38.0
+margin_bottom = 2.0
+rect_min_size = Vector2( 100, 40 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TokensBottom" type="Label" parent="Card/TokenBarBottom"]
+margin_left = -92.0
+margin_top = -39.0
+margin_right = 8.0
+margin_bottom = 41.0
+custom_fonts/font = SubResource( 8 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 0.372549 )
+text = "200"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Shadow" type="Sprite" parent="Card"]
+light_mask = 32
+position = Vector2( 200, 300 )
+texture = ExtResource( 7 )
+
+[node name="FaceMask" type="Light2D" parent="Card"]
+position = Vector2( 200, 300 )
+texture = ExtResource( 10 )
+mode = 3
+range_item_cull_mask = 32
+
+[node name="FrameMask" type="Light2D" parent="Card"]
+position = Vector2( 200, 300 )
+texture = ExtResource( 12 )
+mode = 3
+range_item_cull_mask = 64
+
+[node name="CardMask" type="Light2D" parent="Card"]
+position = Vector2( 200, 300 )
+texture = ExtResource( 4 )
+mode = 3
+range_item_cull_mask = 32768
+
+[node name="Line" type="Sprite" parent="Card"]
+light_mask = 65
+position = Vector2( 0, 535 )
+texture = ExtResource( 8 )
+centered = false
+
+[node name="Orb" type="Sprite" parent="Card"]
+visible = false
+position = Vector2( 200, 518 )
+texture = ExtResource( 52 )
+
+[node name="Logo" type="Sprite" parent="Card"]
+light_mask = 65
+texture = ExtResource( 1 )
+centered = false
+
+[node name="NovelAI" type="TextureButton" parent="Card/Logo"]
+margin_right = 128.0
+margin_bottom = 128.0
+texture_hover = ExtResource( 64 )
+texture_click_mask = ExtResource( 63 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GUI" type="Control" parent="."]
+margin_left = 420.0
+margin_right = 800.0
+margin_bottom = 600.0
+mouse_filter = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Background" type="Sprite" parent="GUI"]
+modulate = Color( 0.862745, 1, 0.960784, 1 )
+position = Vector2( -420, 0 )
+texture = ExtResource( 17 )
+centered = false
+
+[node name="Upload" type="Button" parent="GUI"]
+modulate = Color( 1, 0.984314, 0.796078, 1 )
+margin_left = 296.0
+margin_top = 20.0
+margin_right = 360.0
+margin_bottom = 50.0
+focus_neighbour_left = NodePath("../TypeA")
+focus_neighbour_bottom = NodePath("../TitleInput")
+focus_next = NodePath("../TitleInput")
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+text = "LINK"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delimiter" type="ColorRect" parent="GUI"]
+margin_top = 57.0
+margin_right = 360.0
+margin_bottom = 59.0
+color = Color( 0.223529, 0.223529, 0.223529, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleInput" type="LineEdit" parent="GUI"]
+margin_top = 65.0
+margin_right = 285.0
+margin_bottom = 95.0
+focus_neighbour_right = NodePath("../TitleToggle")
+focus_neighbour_bottom = NodePath("../TitleSize")
+focus_next = NodePath("../TitleSize")
+focus_mode = 1
+mouse_filter = 1
+custom_styles/normal = ExtResource( 28 )
+custom_fonts/font = SubResource( 9 )
+clear_button_enabled = true
+placeholder_text = "TITLE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleSize" type="HSlider" parent="GUI"]
+margin_top = 95.0
+margin_right = 285.0
+margin_bottom = 115.0
+focus_next = NodePath("../NameInput")
+focus_mode = 1
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 10 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = 18.0
+max_value = 42.0
+step = 3.0
+value = 24.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/TitleSize"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "TITLE SIZE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Size" type="Label" parent="GUI/TitleSize"]
+show_behind_parent = true
+margin_left = 164.0
+margin_top = 3.0
+margin_right = 284.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "30"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TitleUpper" type="CheckBox" parent="GUI"]
+visible = false
+margin_left = 314.0
+margin_top = 123.0
+margin_right = 410.0
+margin_bottom = 147.0
+focus_mode = 0
+mouse_filter = 1
+pressed = true
+text = "Uppercase"
+
+[node name="TitleToggle" type="Button" parent="GUI"]
+margin_left = 296.0
+margin_top = 66.0
+margin_right = 360.0
+margin_bottom = 94.0
+focus_next = NodePath("../NameInput")
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = SubResource( 14 )
+toggle_mode = true
+pressed = true
+text = "HIDE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameInput" type="LineEdit" parent="GUI"]
+margin_top = 120.0
+margin_right = 285.0
+margin_bottom = 150.0
+focus_next = NodePath("../NameSize")
+focus_mode = 1
+mouse_filter = 1
+custom_styles/normal = ExtResource( 28 )
+custom_fonts/font = SubResource( 15 )
+clear_button_enabled = true
+placeholder_text = "NAME"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameSize" type="HSlider" parent="GUI"]
+margin_top = 150.0
+margin_right = 285.0
+margin_bottom = 170.0
+focus_next = NodePath("../Tokens")
+focus_mode = 1
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = 18.0
+max_value = 60.0
+step = 3.0
+value = 36.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/NameSize"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "NAME SIZE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Size" type="Label" parent="GUI/NameSize"]
+show_behind_parent = true
+margin_left = 164.0
+margin_top = 3.0
+margin_right = 284.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "30"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="NameUpper" type="CheckBox" parent="GUI"]
+visible = false
+margin_left = 314.0
+margin_top = 27.0
+margin_right = 410.0
+margin_bottom = 51.0
+focus_mode = 0
+mouse_filter = 1
+pressed = true
+text = "Uppercase"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InvertTop" type="TextureButton" parent="GUI"]
+margin_left = 296.0
+margin_top = 289.0
+margin_right = 360.0
+margin_bottom = 337.0
+toggle_mode = true
+texture_normal = ExtResource( 23 )
+texture_pressed = ExtResource( 40 )
+texture_hover = ExtResource( 43 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InvertBot" type="TextureButton" parent="GUI"]
+margin_left = 296.0
+margin_top = 337.0
+margin_right = 360.0
+margin_bottom = 384.0
+toggle_mode = true
+texture_normal = ExtResource( 20 )
+texture_pressed = ExtResource( 22 )
+texture_hover = ExtResource( 21 )
+
+[node name="EmbossToggle" type="TextureButton" parent="GUI"]
+margin_left = 296.0
+margin_top = 391.0
+margin_right = 361.0
+margin_bottom = 407.0
+rect_clip_content = true
+toggle_mode = true
+texture_normal = ExtResource( 42 )
+texture_pressed = ExtResource( 41 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/EmbossToggle"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = -1.0
+margin_right = 63.0
+margin_bottom = 13.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "EMBOSS"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delimiter3" type="ColorRect" parent="GUI"]
+margin_top = 174.0
+margin_right = 360.0
+margin_bottom = 176.0
+color = Color( 0.223529, 0.223529, 0.223529, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShirtsUnderlay" type="ColorRect" parent="GUI"]
+modulate = Color( 1, 1, 1, 0.247059 )
+margin_top = 289.0
+margin_right = 285.0
+margin_bottom = 385.0
+color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScrollContainer" type="ScrollContainer" parent="GUI"]
+margin_left = 6.0
+margin_top = 295.0
+margin_right = 282.0
+margin_bottom = 380.0
+scroll_horizontal_enabled = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Shirts" type="GridContainer" parent="GUI/ScrollContainer"]
+custom_constants/vseparation = 4
+custom_constants/hseparation = 4
+columns = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShirtOpacity" type="HSlider" parent="GUI"]
+margin_top = 387.0
+margin_right = 285.0
+margin_bottom = 407.0
+focus_mode = 0
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+step = 5.0
+value = 35.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/ShirtOpacity"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "PATTERN OPACITY"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delimiter2" type="ColorRect" parent="GUI"]
+margin_top = 281.0
+margin_right = 360.0
+margin_bottom = 283.0
+color = Color( 0.223529, 0.223529, 0.223529, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorHint" type="Label" parent="GUI"]
+margin_top = 420.0
+margin_right = 122.0
+margin_bottom = 435.0
+rect_pivot_offset = Vector2( -701, 15 )
+custom_fonts/font = SubResource( 17 )
+custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
+text = "CARD FRAME COLORS"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="RotateHint" type="Label" parent="GUI"]
+margin_left = 150.0
+margin_top = 420.0
+margin_right = 360.0
+margin_bottom = 435.0
+custom_fonts/font = SubResource( 18 )
+custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
+text = "CARD FRAME GRADIENT PROPERTIES"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Mono" type="Button" parent="GUI"]
+margin_left = 46.0
+margin_top = 440.0
+margin_right = 76.0
+margin_bottom = 462.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+toggle_mode = true
+icon = ExtResource( 47 )
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Swap" type="Button" parent="GUI"]
+margin_left = 46.0
+margin_top = 463.0
+margin_right = 76.0
+margin_bottom = 485.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+icon = ExtResource( 48 )
+clip_text = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FoilRotate" type="HSlider" parent="GUI"]
+margin_left = 150.354
+margin_top = 436.0
+margin_right = 360.354
+margin_bottom = 456.0
+focus_next = NodePath("../FoilAdjust")
+focus_mode = 1
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+max_value = 360.0
+value = 55.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/FoilRotate"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/FoilRotate"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rot0" type="TextureButton" parent="GUI/FoilRotate"]
+modulate = Color( 1, 1, 1, 0.247059 )
+show_behind_parent = true
+margin_top = 4.0
+margin_right = 12.0
+margin_bottom = 16.0
+mouse_filter = 1
+texture_normal = ExtResource( 59 )
+texture_hover = ExtResource( 58 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rot90" type="TextureButton" parent="GUI/FoilRotate"]
+modulate = Color( 1, 1, 1, 0.247059 )
+show_behind_parent = true
+margin_left = 50.0
+margin_top = 4.0
+margin_right = 62.0
+margin_bottom = 16.0
+mouse_filter = 1
+texture_normal = ExtResource( 59 )
+texture_hover = ExtResource( 58 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rot180" type="TextureButton" parent="GUI/FoilRotate"]
+modulate = Color( 1, 1, 1, 0.247059 )
+show_behind_parent = true
+margin_left = 99.0
+margin_top = 4.0
+margin_right = 111.0
+margin_bottom = 16.0
+mouse_filter = 1
+texture_normal = ExtResource( 59 )
+texture_hover = ExtResource( 58 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rot270" type="TextureButton" parent="GUI/FoilRotate"]
+modulate = Color( 1, 1, 1, 0.247059 )
+show_behind_parent = true
+margin_left = 148.0
+margin_top = 4.0
+margin_right = 160.0
+margin_bottom = 16.0
+mouse_filter = 1
+texture_normal = ExtResource( 59 )
+texture_hover = ExtResource( 58 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Rot360" type="TextureButton" parent="GUI/FoilRotate"]
+modulate = Color( 1, 1, 1, 0.247059 )
+show_behind_parent = true
+margin_left = 198.0
+margin_top = 4.0
+margin_right = 210.0
+margin_bottom = 16.0
+mouse_filter = 1
+texture_normal = ExtResource( 59 )
+texture_hover = ExtResource( 58 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/FoilRotate"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "ANGLE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FoilAdjust" type="HSlider" parent="GUI"]
+margin_left = 150.0
+margin_top = 453.0
+margin_right = 360.0
+margin_bottom = 473.0
+focus_next = NodePath("../FoilOffset")
+focus_mode = 1
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = 0.05
+max_value = 0.5
+step = 0.01
+value = 0.12
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/FoilAdjust"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/FoilAdjust"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/FoilAdjust"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "TRANSITION"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FoilOffset" type="HSlider" parent="GUI"]
+margin_left = 150.0
+margin_top = 470.0
+margin_right = 360.0
+margin_bottom = 490.0
+focus_mode = 1
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = -50.0
+max_value = 50.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/FoilOffset"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/FoilOffset"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/FoilOffset"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "OFFSET"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delimiter4" type="ColorRect" parent="GUI"]
+margin_top = 412.0
+margin_right = 360.0
+margin_bottom = 414.0
+color = Color( 0.223529, 0.223529, 0.223529, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Lock" type="TextureButton" parent="GUI"]
+self_modulate = Color( 0.568627, 0.411765, 0.411765, 1 )
+margin_top = 185.0
+margin_right = 12.0
+margin_bottom = 272.0
+hint_tooltip = "Keep transforms when
+a new image is loaded
+[ON] Keep [OFF] Reset"
+toggle_mode = true
+texture_normal = ExtResource( 36 )
+texture_pressed = ExtResource( 37 )
+texture_hover = ExtResource( 35 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Line2D" type="Line2D" parent="GUI/Lock"]
+visible = false
+points = PoolVector2Array( 1, 0, 1, 86, 12, 86, 12, 0, 1, 0 )
+width = 1.0
+default_color = Color( 0.258824, 0.627451, 0.172549, 1 )
+
+[node name="ImageX" type="HSlider" parent="GUI"]
+margin_left = 40.0
+margin_top = 181.0
+margin_right = 360.0
+margin_bottom = 201.0
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = -400.0
+max_value = 400.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/ImageX"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+focus_mode = 1
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/ImageX"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/ImageX"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "MOVE X"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Center" type="ColorRect" parent="GUI/ImageX"]
+show_behind_parent = true
+margin_left = 154.0
+margin_top = 4.0
+margin_right = 166.0
+margin_bottom = 16.0
+mouse_filter = 2
+color = Color( 0.352941, 0.235294, 0.235294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImageY" type="HSlider" parent="GUI"]
+margin_left = 360.0
+margin_top = 225.0
+margin_right = 680.0
+margin_bottom = 245.0
+rect_rotation = 180.0
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = -600.0
+max_value = 600.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/ImageY"]
+margin_left = 328.0
+margin_top = 16.0
+margin_right = 336.0
+margin_bottom = 28.0
+rect_rotation = 180.0
+focus_mode = 1
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/ImageY"]
+margin_left = 328.0
+margin_top = 3.99997
+margin_right = 340.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/ImageY"]
+show_behind_parent = true
+margin_left = 318.0
+margin_top = 17.0
+margin_right = 438.0
+margin_bottom = 31.0
+rect_rotation = 180.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "MOVE Y"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Center" type="ColorRect" parent="GUI/ImageY"]
+show_behind_parent = true
+margin_left = 154.0
+margin_top = 3.99998
+margin_right = 166.0
+margin_bottom = 16.0
+mouse_filter = 2
+color = Color( 0.352941, 0.235294, 0.235294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImageRotate" type="HSlider" parent="GUI"]
+margin_left = 40.0
+margin_top = 231.0
+margin_right = 285.0
+margin_bottom = 251.0
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = -180.0
+max_value = 180.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/ImageRotate"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+focus_mode = 1
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/ImageRotate"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/ImageRotate"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "ROTATE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Center" type="ColorRect" parent="GUI/ImageRotate"]
+show_behind_parent = true
+margin_left = 116.0
+margin_top = 4.0
+margin_right = 128.0
+margin_bottom = 16.0
+mouse_filter = 2
+color = Color( 0.352941, 0.235294, 0.235294, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ImageScale" type="HSlider" parent="GUI"]
+margin_left = 40.0
+margin_top = 256.0
+margin_right = 285.0
+margin_bottom = 276.0
+mouse_filter = 1
+custom_icons/grabber_disabled = ExtResource( 24 )
+custom_icons/grabber_highlight = ExtResource( 24 )
+custom_icons/grabber = SubResource( 16 )
+custom_styles/slider = SubResource( 11 )
+custom_styles/grabber_area_highlight = SubResource( 12 )
+custom_styles/grabber_area = SubResource( 12 )
+min_value = 1.0
+max_value = 2.0
+step = 0.005
+value = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Focus" type="TextureButton" parent="GUI/ImageScale"]
+margin_left = -8.0
+margin_top = 4.0
+margin_bottom = 16.0
+focus_mode = 1
+texture_normal = ExtResource( 50 )
+texture_pressed = ExtResource( 50 )
+texture_hover = ExtResource( 51 )
+texture_focused = ExtResource( 50 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="TextureButton" parent="GUI/ImageScale"]
+margin_left = -20.0
+margin_top = 4.0
+margin_right = -8.0
+margin_bottom = 16.0
+texture_normal = ExtResource( 30 )
+texture_pressed = ExtResource( 31 )
+texture_hover = ExtResource( 29 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/ImageScale"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = 3.0
+margin_right = 122.0
+margin_bottom = 17.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "SCALE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Flip" type="Button" parent="GUI"]
+margin_left = 296.0
+margin_top = 235.0
+margin_right = 360.0
+margin_bottom = 272.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = SubResource( 19 )
+toggle_mode = true
+text = "FLIP"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Delimiter5" type="ColorRect" parent="GUI"]
+margin_top = 495.0
+margin_right = 360.0
+margin_bottom = 497.0
+color = Color( 0.223529, 0.223529, 0.223529, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="URL" type="LineEdit" parent="GUI"]
+visible = false
+margin_top = 511.0
+margin_right = 360.0
+margin_bottom = 531.0
+focus_mode = 1
+mouse_filter = 1
+custom_styles/normal = ExtResource( 28 )
+editable = false
+clear_button_enabled = true
+placeholder_text = "Paste direct URL to the image and press green button"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Reset" type="Button" parent="GUI"]
+modulate = Color( 1.2, 0.7, 0.7, 1 )
+margin_left = 276.0
+margin_top = 540.0
+margin_right = 360.0
+margin_bottom = 580.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+text = "RESET"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Import" type="Button" parent="GUI"]
+modulate = Color( 0.607843, 0.858824, 1, 1 )
+margin_top = 505.0
+margin_right = 133.0
+margin_bottom = 535.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+text = ">>>IMPORT"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Export" type="Button" parent="GUI"]
+modulate = Color( 0.607843, 0.858824, 1, 1 )
+margin_left = 138.0
+margin_top = 505.0
+margin_right = 271.0
+margin_bottom = 535.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+text = "EXPORT>>>"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Undo" type="Button" parent="GUI"]
+modulate = Color( 1, 0.862745, 0.741176, 1 )
+margin_left = 276.0
+margin_top = 505.0
+margin_right = 360.0
+margin_bottom = 535.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+disabled = true
+text = "UNDO"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SaveDialog" type="FileDialog" parent="GUI"]
+margin_left = -340.0
+margin_top = 60.0
+margin_right = 300.0
+margin_bottom = 540.0
+window_title = "Export Card"
+access = 2
+current_dir = "/Myrmex/Documents/Godot/NAI Card Editor"
+current_file = "card.png"
+current_path = "/Myrmex/Documents/Godot/NAI Card Editor/card.png"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LoadDialog" type="FileDialog" parent="GUI"]
+margin_left = -340.0
+margin_top = 60.0
+margin_right = 300.0
+margin_bottom = 540.0
+window_title = "Открыть файл"
+mode = 0
+access = 2
+filters = PoolStringArray( "*.jpg", "*.png", "*.tga", "*.bmp" )
+current_dir = "/Myrmex/Documents/Godot/NAI Card Editor"
+current_path = "/Myrmex/Documents/Godot/NAI Card Editor/"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Source" type="RichTextLabel" parent="GUI"]
+visible = false
+margin_left = 16.0
+margin_top = 583.0
+margin_right = 616.0
+margin_bottom = 603.0
+rect_clip_content = false
+custom_fonts/normal_font = SubResource( 20 )
+text = "COPY
+"
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Sprite" type="Sprite" parent="GUI/Source"]
+position = Vector2( -10, 7 )
+texture = ExtResource( 57 )
+
+[node name="Clover" type="TextureButton" parent="GUI"]
+modulate = Color( 1, 0.313726, 1, 0.247059 )
+margin_left = 362.0
+margin_top = 582.0
+margin_right = 378.0
+margin_bottom = 598.0
+texture_normal = ExtResource( 32 )
+texture_pressed = ExtResource( 53 )
+texture_hover = ExtResource( 33 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Random" type="TextureButton" parent="GUI"]
+modulate = Color( 1, 1, 1, 0.164706 )
+margin_left = 342.0
+margin_top = 582.0
+margin_right = 358.0
+margin_bottom = 598.0
+texture_normal = ExtResource( 55 )
+texture_pressed = ExtResource( 56 )
+texture_hover = ExtResource( 54 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorA" type="Button" parent="GUI"]
+margin_top = 440.0
+margin_right = 45.0
+margin_bottom = 485.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+toggle_mode = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SampleA" type="ColorRect" parent="GUI/ColorA"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 43.0
+margin_bottom = 43.0
+mouse_filter = 2
+color = Color( 0.65098, 1, 0.796078, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorB" type="Button" parent="GUI"]
+margin_left = 77.0
+margin_top = 440.0
+margin_right = 122.0
+margin_bottom = 485.0
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+toggle_mode = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SampleB" type="ColorRect" parent="GUI/ColorB"]
+margin_left = 2.0
+margin_top = 2.0
+margin_right = 43.0
+margin_bottom = 43.0
+mouse_filter = 2
+color = Color( 0.231373, 0.541176, 0.309804, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpdateMode" type="Sprite" parent="GUI"]
+visible = false
+self_modulate = Color( 0.862745, 1, 0.960784, 1 )
+position = Vector2( -420, 0 )
+texture = ExtResource( 17 )
+centered = false
+
+[node name="Original" type="Sprite" parent="GUI/UpdateMode"]
+texture = SubResource( 21 )
+centered = false
+
+[node name="Hint1" type="Label" parent="GUI/UpdateMode"]
+margin_left = 480.0
+margin_top = 117.0
+margin_right = 780.0
+margin_bottom = 177.0
+custom_fonts/font = SubResource( 22 )
+custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
+custom_constants/line_spacing = 1
+text = "UPLOAD A CARD TO REPLACE ITS
+TOKEN COUNT WITH A NEW VALUE
+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint2" type="Label" parent="GUI/UpdateMode"]
+margin_left = 480.0
+margin_top = 117.0
+margin_right = 780.0
+margin_bottom = 177.0
+custom_fonts/font = SubResource( 22 )
+custom_colors/font_color = Color( 1, 0.423529, 0.423529, 1 )
+custom_constants/line_spacing = 1
+text = "
+
+ANY EMBED DATA WILL BE LOST!"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TypeA" type="Button" parent="GUI"]
+margin_top = 20.0
+margin_right = 80.0
+margin_bottom = 50.0
+focus_neighbour_right = NodePath("../TypeB")
+focus_neighbour_bottom = NodePath("../TitleInput")
+focus_next = NodePath("../TypeB")
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+toggle_mode = true
+shortcut_in_tooltip = false
+pressed = true
+text = "TYPE A"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TypeB" type="Button" parent="GUI"]
+margin_left = 85.0
+margin_top = 20.0
+margin_right = 165.0
+margin_bottom = 50.0
+focus_neighbour_left = NodePath("../TypeA")
+focus_neighbour_bottom = NodePath("../TitleInput")
+focus_next = NodePath("../TitleInput")
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+toggle_mode = true
+text = "TYPE B"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TypeC" type="Button" parent="GUI"]
+margin_left = 170.0
+margin_top = 20.0
+margin_right = 250.0
+margin_bottom = 50.0
+focus_neighbour_left = NodePath("../TypeA")
+focus_neighbour_bottom = NodePath("../TitleInput")
+focus_next = NodePath("../TitleInput")
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+disabled = true
+toggle_mode = true
+text = "TYPE C"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Download" type="Button" parent="GUI"]
+modulate = Color( 0.607843, 1, 0.615686, 1 )
+margin_top = 540.0
+margin_right = 271.0
+margin_bottom = 580.0
+hint_tooltip = "File will be saved in your default
+download location automatically.
+If nothing happens - please check
+your browser's security settings."
+focus_mode = 0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = ExtResource( 2 )
+disabled = true
+action_mode = 0
+text = "DOWNLOAD"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ErrorText" type="Label" parent="GUI"]
+margin_top = 580.0
+margin_right = 380.0
+margin_bottom = 600.0
+custom_fonts/font = SubResource( 23 )
+custom_colors/font_color = Color( 1, 0.482353, 0.482353, 1 )
+text = "Error"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="UpdateTokens" type="TextureButton" parent="GUI"]
+modulate = Color( 0.701961, 0.890196, 0.423529, 1 )
+margin_left = 348.0
+margin_top = 106.0
+margin_right = 360.0
+margin_bottom = 118.0
+hint_tooltip = "Update token count
+of a pre-made card"
+toggle_mode = true
+texture_normal = ExtResource( 62 )
+texture_pressed = ExtResource( 61 )
+texture_hover = ExtResource( 60 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Tokens" type="SpinBox" parent="GUI"]
+margin_left = 296.0
+margin_top = 120.0
+margin_right = 376.0
+margin_bottom = 150.0
+focus_next = NodePath("../TokenPos")
+focus_mode = 1
+mouse_filter = 1
+max_value = 9995.0
+step = 5.0
+value = 200.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Line2D" type="Line2D" parent="GUI/Tokens"]
+position = Vector2( 1, 0 )
+points = PoolVector2Array( 0, 0, 64, 0, 64, 29, 0, 29, 0, 0 )
+width = 1.0
+default_color = Color( 0.564706, 0.564706, 0.564706, 1 )
+
+[node name="Tween" type="Tween" parent="GUI/Tokens/Line2D"]
+
+[node name="TokenHint" type="Label" parent="GUI"]
+margin_left = 295.0
+margin_top = 105.0
+margin_right = 360.0
+margin_bottom = 120.0
+custom_fonts/font = SubResource( 17 )
+custom_colors/font_color = Color( 0.721569, 0.721569, 0.721569, 1 )
+text = "TOKENS"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TokenPos" type="TextureButton" parent="GUI"]
+margin_left = 296.0
+margin_top = 154.0
+margin_right = 362.0
+margin_bottom = 170.0
+rect_clip_content = true
+toggle_mode = true
+texture_normal = ExtResource( 42 )
+texture_pressed = ExtResource( 41 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Hint" type="Label" parent="GUI/TokenPos"]
+show_behind_parent = true
+margin_left = 2.0
+margin_top = -1.0
+margin_right = 63.0
+margin_bottom = 13.0
+custom_fonts/font = SubResource( 13 )
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+text = "ORIGIN"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PickerPanelA" type="Panel" parent="GUI"]
+visible = false
+margin_left = -17.0
+margin_right = 303.0
+margin_bottom = 420.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PickerA" type="ColorPicker" parent="GUI/PickerPanelA"]
+margin_left = 210.0
+margin_top = 210.0
+margin_right = 518.0
+margin_bottom = 622.0
+edit_alpha = false
+hsv_mode = true
+presets_enabled = false
+presets_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PickerPanelB" type="Panel" parent="GUI"]
+visible = false
+margin_left = -17.0
+margin_right = 303.0
+margin_bottom = 420.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PickerB" type="ColorPicker" parent="GUI/PickerPanelB"]
+margin_left = 210.0
+margin_top = 210.0
+margin_right = 518.0
+margin_bottom = 622.0
+color = Color( 0, 0.623529, 1, 1 )
+edit_alpha = false
+hsv_mode = true
+presets_enabled = false
+presets_visible = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Flash" type="Sprite" parent="."]
+visible = false
+texture = ExtResource( 4 )
+centered = false
+
+[node name="Tween" type="Tween" parent="Flash"]
+
+[node name="ExportDialog" type="WindowDialog" parent="."]
+margin_left = 420.0
+margin_top = 390.0
+margin_right = 780.0
+margin_bottom = 545.0
+custom_icons/close = ExtResource( 49 )
+custom_styles/panel = SubResource( 24 )
+custom_colors/title_color = Color( 0, 0, 0, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CodeField" type="TextEdit" parent="ExportDialog"]
+margin_left = 10.0
+margin_top = 10.0
+margin_right = 350.0
+margin_bottom = 105.0
+custom_styles/read_only = ExtResource( 28 )
+custom_styles/normal = ExtResource( 28 )
+custom_fonts/font = ExtResource( 34 )
+readonly = true
+syntax_highlighting = true
+virtual_keyboard_enabled = false
+wrap_enabled = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Nais" type="Button" parent="ExportDialog"]
+margin_left = 10.0
+margin_top = 115.0
+margin_right = 90.0
+margin_bottom = 145.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = SubResource( 25 )
+text = ".NAIS>>>"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Clipboard" type="Button" parent="ExportDialog"]
+margin_left = 95.0
+margin_top = 115.0
+margin_right = 275.0
+margin_bottom = 145.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = SubResource( 25 )
+text = "COPY TO CLIPBOARD"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Cancel" type="Button" parent="ExportDialog"]
+modulate = Color( 1, 0.694118, 0.694118, 1 )
+margin_left = 280.0
+margin_top = 115.0
+margin_right = 350.0
+margin_bottom = 145.0
+custom_styles/hover = ExtResource( 25 )
+custom_styles/pressed = ExtResource( 26 )
+custom_styles/disabled = ExtResource( 27 )
+custom_styles/normal = ExtResource( 14 )
+custom_fonts/font = SubResource( 26 )
+text = "CLOSE"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Spectrum" parent="." instance=ExtResource( 19 )]
+visible = false
+anchor_right = 0.0
+anchor_bottom = 0.0
+margin_left = 50.0
+margin_top = 420.0
+margin_right = 200.0
+margin_bottom = 470.0
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
